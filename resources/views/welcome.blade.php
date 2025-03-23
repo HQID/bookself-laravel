@@ -11,9 +11,9 @@
         <nav class="flex py-4 px-8 bg-gray-800 text-white justify-between text-xl items-center">
             <h1 class="text-2xl font-semibold">BookSelf</h1>
             <ul class="flex gap-12 justify-center items-center">
-                <li class="cursor-pointer"><a href="/">Home</a></li>
-                <li class="cursor-pointer"><a href="/about">About</a></li>
-                <li class="cursor-pointer"><a href="/collection">Collection</a></li>
+                <li class="cursor-pointer hover:text-gray-400 transition"><a href="/">Home</a></li>
+                <li class="cursor-pointer hover:text-gray-400 transition"><a href="/about">About</a></li>
+                <li class="cursor-pointer hover:text-gray-400 transition"><a href="/collection">Collection</a></li>
             </ul>
             <div class="flex gap-6">
                 @auth
@@ -21,10 +21,10 @@
                         <span class="cursor-pointer">{{ Auth::user()->name }}</span>
                         <button onclick="toggleDropdown()" class="ml-2 py-2 px-4 rounded-xl border-2 hover:bg-gray-900 transition-all ease-in-out duration-300 cursor-pointer">▼</button>
                         <div id="dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 hidden">
-                            <a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Edit Profile</a>
+                            <a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Edit Profile</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200">Logout</button>
+                                <button type="submit" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Logout</button>
                             </form>
                         </div>
                     </div>
@@ -46,24 +46,20 @@
         </div>
     </section>
 
-    <section class="text-2xl py-12 px-16">
+    <section class="flex flex-col gap-2 text-2xl py-12 px-16">
         <h2 class="text-3xl text-gray-800 font-bold mb-6">My Books</h2>
-        <div class="flex flex-wrap gap-18">
+        <div class="flex flex-wrap gap-12">
+            @foreach($books->take(5) as $book)
             <div class="w-52 rounded-lg shadow-gray-800 shadow-md">
-                <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1516602134i/36393774.jpg" alt="Book Cover" class="object-cover rounded-lg">
+                <img src="{{ $book->image_url }}" alt="Book Cover" class="object-cover rounded-lg w-full">
                 <div class="flex flex-col gap-6 p-4">
-                    <h3 class="text-xl font-semibold">Laut Bercerita</h3>
-                    <button class="text-lg bg-gray-800 text-white rounded-lg px-4 py-2 self-end cursor-pointer">Reading</button>
+                    <h3 class="text-xl font-semibold">{{ $book->title }}</h3>
+                    <button class="text-lg bg-gray-800 text-white rounded-lg px-4 py-2 self-end cursor-pointer">{{ $book->status }}</button>
                 </div>
             </div>
-            <div class="w-52 rounded-lg shadow-gray-800 shadow-md">
-                <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1516602134i/36393774.jpg" alt="Book Cover" class="object-cover rounded-lg">
-                <div class="flex flex-col gap-6 p-4">
-                    <h3 class="text-xl font-semibold">Laut Bercerita</h3>
-                    <button class="text-lg bg-gray-800 text-white rounded-lg px-4 py-2 self-end cursor-pointer">Reading</button>
-                </div>
-            </div>
+            @endforeach
         </div>
+        <a href="/collection" class="self-end"><button class="py-2 px-4 rounded-xl bg-gray-800 text-white hover:bg-gray-900 transition-all ease-in-out duration-300 cursor-pointer mt-8 ">More...</button></a>
     </section>
 
     <footer class="bg-gray-800 text-white pt-12 pb-4 px-8 mt-12">
