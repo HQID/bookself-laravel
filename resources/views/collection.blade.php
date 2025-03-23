@@ -36,35 +36,61 @@
         </nav>
     </header>
 
-    <section class="text-xl shadow-gray-800 shadow-sm">
-        <div class="relative bg-cover bg-center h-[90vh]" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')">
-            <div class="absolute inset-0 bg-black opacity-20"></div>
-            <div class="absolute inset-0 flex items-center justify-center flex-col">
-                <h1 class="text-white text-4xl font-bold">Welcome to BookSelf</h1>
-                <p class="text-white text-center mt-4 max-w-2xl">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione necessitatibus possimus repellendus ipsam. Aspernatur quaerat iure, ducimus in ab eaque.</p>
+    <section class="text-2xl py-12 px-16">
+        <div class="flex justify-between mb-4 items-center">
+            <h2 class="text-3xl text-gray-800 font-bold mb-6">My Collection</h2>
+                <button onclick="openModal()" class="text-lg bg-gray-800 text-white rounded-lg px-5 py-3 cursor-pointer font-semibold">Add Book</button>
             </div>
-        </div>
+        <div class="flex flex-wrap gap-12">
+            <div class="flex items-start rounded-lg shadow-gray-800 shadow-md gap-4 w-96">
+                <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1516602134i/36393774.jpg" 
+                    alt="Book Cover" class="w-32 object-cover rounded-lg">
+                <div class="flex flex-col gap-2 flex-1 pl-0 p-4">
+                    <div>
+                        <p class="text-lg text-gray-400">Tere liye</p>
+                        <h3 class="text-xl font-semibold">Laut Bercerita</h3>
+                    </div>
+                    <p class="text-sm line-clamp-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque optio commodi exercitationem. Error corporis laborum tempora beatae.</p>
+                    <button class="text-sm bg-gray-800 text-white rounded-lg px-4 py-2 cursor-pointer self-start">Reading</button>
+                    <div class="flex justify-end gap-4 mt-4">
+                        <button class="text-lg bg-gray-800 text-white rounded-lg px-4 py-2 cursor-pointer">Edit</button>
+                        <button class="text-lg bg-red-600 text-white rounded-lg px-4 py-2 cursor-pointer">Delete</button>
+                    </div>
+                </div>
+            </div>
     </section>
 
-    <section class="text-2xl py-12 px-16">
-        <h2 class="text-3xl text-gray-800 font-bold mb-6">My Books</h2>
-        <div class="flex flex-wrap gap-18">
-            <div class="w-52 rounded-lg shadow-gray-800 shadow-md">
-                <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1516602134i/36393774.jpg" alt="Book Cover" class="object-cover rounded-lg">
-                <div class="flex flex-col gap-6 p-4">
-                    <h3 class="text-xl font-semibold">Laut Bercerita</h3>
-                    <button class="text-lg bg-gray-800 text-white rounded-lg px-4 py-2 self-end cursor-pointer">Reading</button>
+    <!-- Popup Modal -->
+    <div id="addBookModal" class="fixed inset-0 bg-black/50 flex justify-center items-center hidden">
+        <div class="bg-white rounded-lg p-6 w-96 shadow-lg">
+            <h2 class="text-2xl font-semibold mb-4">Add New Book</h2>
+            <form id="bookForm">
+                <div class="mb-3">
+                    <label class="block text-gray-700">Title</label>
+                    <input type="text" id="title" class="w-full border rounded-lg px-3 py-2" required>
                 </div>
-            </div>
-            <div class="w-52 rounded-lg shadow-gray-800 shadow-md">
-                <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1516602134i/36393774.jpg" alt="Book Cover" class="object-cover rounded-lg">
-                <div class="flex flex-col gap-6 p-4">
-                    <h3 class="text-xl font-semibold">Laut Bercerita</h3>
-                    <button class="text-lg bg-gray-800 text-white rounded-lg px-4 py-2 self-end cursor-pointer">Reading</button>
+                <div class="mb-3">
+                    <label class="block text-gray-700">Author</label>
+                    <input type="text" id="author" class="w-full border rounded-lg px-3 py-2" required>
                 </div>
-            </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700">Description</label>
+                    <textarea id="description" class="resize-none w-full border rounded-lg px-3 py-2" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700">Status</label>
+                    <select id="status" class="w-full border rounded-lg px-3 py-2">
+                        <option value="Reading">Reading</option>
+                        <option value="Finished">Finished</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 bg-red-600 text-white rounded-lg cursor-pointer">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-gray-800 cursor-pointer text-white rounded-lg">Add</button>
+                </div>
+            </form>
         </div>
-    </section>
+    </div>
 
     <footer class="bg-gray-800 text-white pt-12 pb-4 px-8 mt-12">
         <div class="container mx-auto flex flex-col md:flex-row justify-between items-center mb-12">
@@ -102,6 +128,20 @@
             var dropdown = document.getElementById('dropdown');
             dropdown.classList.toggle('hidden');
         }
+
+        function openModal() {
+            document.getElementById('addBookModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('addBookModal').classList.add('hidden');
+        }
+
+        document.getElementById('bookForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Book added successfully!');
+            closeModal();
+        });
     </script>
 </body>
 </html>
