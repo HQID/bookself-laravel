@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="shortcut icon" href="{{ asset('bookself.png') }}" type="image/x-icon">
     <title>BookSelf App</title>
 </head>
 <body>
@@ -65,6 +66,74 @@
             @endforeach
         </div>
     </section>
+
+    <section class="text-2xl py-12 px-16">
+        <div class="flex justify-between mb-4 items-center">
+            <h2 class="text-3xl text-gray-800 font-bold mb-6">My Review</h2>
+            <button onclick="openReviewModal()" class="text-lg bg-gray-800 text-white rounded-lg px-5 py-3 cursor-pointer font-semibold">Add Review</button>
+        </div>
+        <div class="flex flex-col gap-6">
+            @foreach($reviews as $review)
+            <div class="p-6 bg-white rounded-lg shadow-md">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-semibold">{{ $review->book->title }}</h3>
+                        <p class="text-sm text-gray-500">By {{ $review->user->name }} - {{ $review->created_at->diffForHumans() }}</p>
+                    </div>
+                    <div class="text-yellow-500">
+                        @for ($i = 0; $i < $review->rating; $i++)
+                            ★
+                        @endfor
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-700">{{ $review->review }}</p>
+                @can('delete', $review)
+                <form method="POST" action="{{ route('reviews.destroy', $review) }}" class="mt-4">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-red-600 hover:underline">Delete</button>
+                </form>
+                @endcan
+            </div>
+            @endforeach
+        </div>
+    </section>
+
+    <!-- Add Review Modal -->
+    <div id="addReviewModal" class="fixed inset-0 bg-black/50 flex justify-center items-center hidden">
+        <div class="bg-white rounded-lg p-6 w-96 shadow-lg">
+            <h2 id="reviewModalTitle" class="text-2xl font-semibold mb-4">Add New Review</h2>
+            <form id="reviewForm" method="POST" action="{{ route('reviews.store') }}">
+                @csrf
+                <div class="mb-3">
+                    <label class="block text-gray-700">Book</label>
+                    <select id="book_id" name="book_id" class="w-full border rounded-lg px-3 py-2" required>
+                        @foreach($books as $book)
+                            <option value="{{ $book->id }}">{{ $book->title }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700">Rating</label>
+                    <select id="rating" name="rating" class="w-full border rounded-lg px-3 py-2" required>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700">Review</label>
+                    <textarea id="review" name="review" class="resize-none w-full border rounded-lg px-3 py-2" rows="3" required></textarea>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="closeReviewModal()" class="px-4 py-2 bg-red-600 text-white rounded-lg cursor-pointer">Cancel</button>
+                    <button type="submit" id="reviewSubmitButton" class="px-4 py-2 bg-gray-800 cursor-pointer text-white rounded-lg">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Popup Modal -->
     <div id="addBookModal" class="fixed inset-0 bg-black/50 flex justify-center items-center hidden">
@@ -162,6 +231,18 @@
             document.getElementById('bookForm').insertAdjacentHTML('beforeend', '@method('PATCH')');
             document.getElementById('submitButton').innerText = 'Update Book';
             document.getElementById('addBookModal').classList.remove('hidden');
+        }
+
+        function openReviewModal() {
+            document.getElementById('reviewModalTitle').innerText = 'Add New Review';
+            document.getElementById('reviewForm').reset();
+            document.getElementById('reviewForm').action = '{{ route('reviews.store') }}';
+            document.getElementById('reviewSubmitButton').innerText = 'Add Review';
+            document.getElementById('addReviewModal').classList.remove('hidden');
+        }
+
+        function closeReviewModal() {
+            document.getElementById('addReviewModal').classList.add('hidden');
         }
 
         document.getElementById('bookForm').addEventListener('submit', function(event) {

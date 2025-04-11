@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Book;
+use App\Models\Review; // Add this line
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate; // Add this line
 
@@ -12,8 +13,10 @@ class BookController extends Controller
 {
     public function index()
     {
-        $books = Book::where('user_id', Auth::id())->get();
-        return view('collection', compact('books'));
+        $books = Book::where('user_id', auth()->id())->get();
+        $reviews = Review::with('book', 'user')->where('user_id', auth()->id())->get(); // Fetch reviews
+
+        return view('collection', compact('books', 'reviews')); // Pass reviews to the view
     }
 
     public function store(Request $request)

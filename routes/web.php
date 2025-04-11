@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\ReviewController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
@@ -20,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/collection/{book}', [BookController::class, 'update'])->name('collection.update');
     Route::delete('/collection/{book}', [BookController::class, 'destroy'])->name('collection.destroy');
     Route::get('/collection/{book}', [BookController::class, 'show'])->name('collection.show');
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
 require __DIR__.'/auth.php';

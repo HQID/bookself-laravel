@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="shortcut icon" href="{{ asset('bookself.png') }}" type="image/x-icon">
     <title>BookSelf App</title>
 </head>
 <body>
@@ -49,7 +50,7 @@
     <section class="flex flex-col gap-2 text-2xl py-12 px-16">
         <h2 class="text-3xl text-gray-800 font-bold mb-6">My Books</h2>
         <div class="flex flex-wrap gap-12">
-            @foreach($books->take(5) as $book)
+            @foreach($books->where('user_id', Auth::id())->take(5) as $book)
             <div class="w-52 rounded-lg shadow-gray-800 shadow-md">
                 <img src="{{ $book->image_url }}" alt="Book Cover" class="object-cover rounded-lg w-full">
                 <div class="flex flex-col gap-6 p-4">
@@ -60,6 +61,28 @@
             @endforeach
         </div>
         <a href="/collection" class="self-end"><button class="py-2 px-4 rounded-xl bg-gray-800 text-white hover:bg-gray-900 transition-all ease-in-out duration-300 cursor-pointer mt-8 ">More...</button></a>
+    </section>
+
+    <section class="flex flex-col gap-2 text-2xl py-12 px-16">
+        <h2 class="text-3xl text-gray-800 font-bold mb-6">User Reviews</h2>
+        <div class="flex flex-col gap-6">
+            @foreach($reviews->sortByDesc('created_at') as $review)
+            <div class="p-6 bg-white rounded-lg shadow-md">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-semibold">{{ $review->book->title }}</h3>
+                        <p class="text-sm text-gray-500">By {{ $review->user->name }} - {{ $review->created_at->diffForHumans() }}</p>
+                    </div>
+                    <div class="text-yellow-500">
+                        @for ($i = 0; $i < $review->rating; $i++)
+                            ★
+                        @endfor
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-700">{{ $review->review }}</p>
+            </div>
+            @endforeach
+        </div>
     </section>
 
     <footer class="bg-gray-800 text-white pt-12 pb-4 px-8 mt-12">
