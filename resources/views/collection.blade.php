@@ -1,41 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="shortcut icon" href="{{ asset('bookself.png') }}" type="image/x-icon">
-    <title>BookSelf App</title>
+@include('layouts.head', ['title' => 'Collection - BookSelf App'])
 </head>
 <body>
-    <header>
-        <nav class="flex py-4 px-8 bg-gray-800 text-white justify-between text-xl items-center">
-            <h1 class="text-2xl font-semibold">BookSelf</h1>
-            <ul class="flex gap-12 justify-center items-center">
-                <li class="cursor-pointer hover:text-gray-400 transition"><a href="/">Home</a></li>
-                <li class="cursor-pointer hover:text-gray-400 transition"><a href="/about">About</a></li>
-                <li class="cursor-pointer hover:text-gray-400 transition"><a href="/collection">Collection</a></li>
-            </ul>
-            <div class="flex gap-6">
-                @auth
-                    <div class="relative">
-                        <span class="cursor-pointer">{{ Auth::user()->name }}</span>
-                        <button onclick="toggleDropdown()" class="ml-2 py-2 px-4 rounded-xl border-2 hover:bg-gray-900 transition-all ease-in-out duration-300 cursor-pointer">▼</button>
-                        <div id="dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 hidden">
-                            <a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Edit Profile</a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Logout</button>
-                            </form>
-                        </div>
-                    </div>
-                @else
-                    <a href="/login"><button class="py-2 px-4 rounded-xl border-2 hover:bg-gray-900 transition-all ease-in-out duration-300 cursor-pointer">Login</button></a>
-                    <a href="/register"><button class="py-2 px-4 rounded-xl border-2 bg-white text-gray-800 hover:bg-gray-200 transition-all ease-in-out duration-300 cursor-pointer">Signup</button></a>
-                @endauth
-            </div>
-        </nav>
-    </header>
+    @include('layouts.header')
 
     <section class="text-2xl py-12 px-16">
         <div class="flex justify-between mb-4 items-center">
@@ -74,8 +43,9 @@
         </div>
         <div class="flex flex-col gap-6">
             @foreach($reviews as $review)
-            <div class="p-6 bg-white rounded-lg shadow-md">
-                <div class="flex justify-between items-center">
+            <div class="flex items-start rounded-lg shadow-gray-800 shadow-md gap-4 p-6 bg-white">
+                <img src="{{ $review->book->image_url }}" alt="Book Cover" class="w-32 object-cover rounded-lg">
+                <div class="flex flex-col gap-2 flex-1">
                     <div>
                         <h3 class="text-lg font-semibold">{{ $review->book->title }}</h3>
                         <p class="text-sm text-gray-500">By {{ $review->user->name }} - {{ $review->created_at->diffForHumans() }}</p>
@@ -85,15 +55,18 @@
                             ★
                         @endfor
                     </div>
+                    <p class="mt-4 text-gray-700">{{ $review->review }}</p>
+                    <div class="flex justify-end gap-4 mt-4">
+                        <button onclick="editReview({{ $review }})" class="text-lg bg-gray-800 text-white rounded-lg px-4 py-2 cursor-pointer">Edit</button>
+                        @can('delete', $review)
+                        <form method="POST" action="{{ route('reviews.destroy', $review) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-lg bg-red-600 text-white rounded-lg px-4 py-2 cursor-pointer">Delete</button>
+                        </form>
+                        @endcan
+                    </div>
                 </div>
-                <p class="mt-4 text-gray-700">{{ $review->review }}</p>
-                @can('delete', $review)
-                <form method="POST" action="{{ route('reviews.destroy', $review) }}" class="mt-4">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="text-red-600 hover:underline">Delete</button>
-                </form>
-                @endcan
             </div>
             @endforeach
         </div>
@@ -169,43 +142,9 @@
         </div>
     </div>
 
-    <footer class="bg-gray-800 text-white pt-12 pb-4 px-8 mt-12">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center mb-12">
-            <div class="mb-4 md:mb-0">
-                <h2 class="text-3xl font-semibold">BookSelf</h2>
-                <p class="text-gray-400 text-md mt-2">Read, Share, and Enjoy Your Favorite Books.</p>
-            </div>
-            
-            <nav class="flex flex-col gap-4 text-lg">
-                <a href="/" class="hover:text-gray-400 transition">Home</a>
-                <a href="/about" class="hover:text-gray-400 transition">About</a>
-                <a href="/collection" class="hover:text-gray-400 transition">Collection</a>
-            </nav>
-
-            <div class="flex gap-6 mt-4 md:mt-0">
-                <a href="#" class="hover:text-gray-400 transition">
-                    <i class="fa-brands fa-facebook text-2xl"></i>
-                </a>
-                <a href="#" class="hover:text-gray-400 transition">
-                    <i class="fa-brands fa-twitter text-2xl"></i>
-                </a>
-                <a href="#" class="hover:text-gray-400 transition">
-                    <i class="fa-brands fa-instagram text-2xl"></i>
-                </a>
-            </div>
-        </div>
-
-        <div class="border-t border-gray-700 mt-6 pt-4 text-center text-gray-400 text-sm">
-            &copy; <?php echo date('Y'); ?> BookSelf. All rights reserved.
-        </div>
-    </footer>
+    @include('layouts.footer')
 
     <script>
-        function toggleDropdown() {
-            var dropdown = document.getElementById('dropdown');
-            dropdown.classList.toggle('hidden');
-        }
-
         function openModal() {
             document.getElementById('modalTitle').innerText = 'Add New Book';
             document.getElementById('bookForm').reset();
@@ -243,6 +182,18 @@
 
         function closeReviewModal() {
             document.getElementById('addReviewModal').classList.add('hidden');
+        }
+
+        function editReview(review) {
+            document.getElementById('reviewModalTitle').innerText = 'Edit Review';
+            document.getElementById('book_id').value = review.book_id;
+            document.getElementById('rating').value = review.rating;
+            document.getElementById('review').value = review.review;
+            document.getElementById('reviewForm').action = '{{ route('reviews.update', '') }}/' + review.id;
+            document.getElementById('reviewForm').method = 'POST';
+            document.getElementById('reviewForm').insertAdjacentHTML('beforeend', '@method('PATCH')');
+            document.getElementById('reviewSubmitButton').innerText = 'Update Review';
+            document.getElementById('addReviewModal').classList.remove('hidden');
         }
 
         document.getElementById('bookForm').addEventListener('submit', function(event) {

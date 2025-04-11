@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="shortcut icon" href="{{ asset('bookself.png') }}" type="image/x-icon">
-    <title>Register - BookSelf App</title>
+    @include('layouts.head', ['title' => 'Register - BookSelf App'])
 </head>
 <body>
     <section class="flex justify-center items-center h-screen bg-gray-100">

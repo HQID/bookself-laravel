@@ -22,7 +22,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/collection/{book}', [BookController::class, 'destroy'])->name('collection.destroy');
     Route::get('/collection/{book}', [BookController::class, 'show'])->name('collection.show');
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::patch('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
+
+Route::resource('reviews', ReviewController::class)->middleware('auth');
 
 require __DIR__.'/auth.php';
